@@ -1,52 +1,90 @@
-> **Epitech project — `G-OOP-400` (`arcade`)**
+# Arcade
+
+Borne d'arcade modulaire écrite en C++20 : un cœur unique charge dynamiquement ses
+jeux **et** ses bibliothèques d'affichage à l'exécution, sous forme de bibliothèques
+partagées. On peut passer d'un jeu à l'autre et d'un moteur graphique à l'autre sans
+jamais recompiler ni relancer le programme — l'intérêt du projet est autant
+l'architecture que les jeux eux-mêmes.
+
+> **Epitech · `G-OOP-400` (« arcade »)** — projet d'équipe mené avec
+> [Romane Cauvez](https://github.com/Romanecauvez) et
+> [Thomas Peze](https://github.com/Thomas-Peze28).
 >
-> Built with [Romanecauvez](https://github.com/Romanecauvez), [Thomas-Peze28](https://github.com/Thomas-Peze28).
-> I was the lead developer on this project.
+> **Mon rôle :** développeur principal du projet.
 >
-> This is my own copy of the assignment repository, published here as a
-> portfolio piece. The original repository is private.
+> Ce dépôt est ma copie personnelle du rendu, publiée comme projet de portfolio.
+> Le dépôt d'origine est privé.
 
 ---
 
-# 🕹️ Arcade - Projet C++
+## Architecture
 
-Bienvenue sur le projet Arcade ! Ce projet est une borne d'arcade modulaire développée en C++20. 
-L'objectif principal est de fournir une architecture permettant de charger dynamiquement des jeux et des bibliothèques graphiques à l'exécution, sans jamais avoir à recompiler le programme principal grâce à l'utilisation des librairies dynamiques.
+Le cœur ne connaît que deux interfaces abstraites, déclarées dans `include/` :
 
-## 📚 Sommaire de la documentation
+| Interface | Rôle |
+|---|---|
+| `IGame` | Un jeu : état, entrées, rendu logique |
+| `IDisplay` | Un moteur d'affichage : ouverture de fenêtre, dessin, entrées brutes |
 
-* **[🎮 Contrôles](doc/CONTROLS.md)** : Présentation des contrôles et touches pris en charge.
+`DLLoader` (`include/DLLoader.hpp`) ouvre les `.so` avec `dlopen` et résout les
+symboles d'entrée ; `Arcade` orchestre la boucle principale et bascule de module à
+chaud. Tout ce qui est chargé à l'exécution vit dans `lib/`.
 
-* **[👾 Créer un Jeu (API IGame)](doc/GAMES.md)** : Indication sur l'implémentation de nouveaux jeux.
+## Jeux et affichages fournis
 
-* **[📺 Créer un Module Graphique (API IDisplay)](doc/GRAPHICS.md)** : Indication sur l'implémentation de nouveaux modules graphiques.
+| Jeux | Bibliothèques graphiques |
+|---|---|
+| Snake | SFML |
+| Démineur (Minesweeper) | SDL2 |
+| | Ncurses |
+| | Allegro5 |
 
-## 🚀 Compilation
+## Compilation
 
-Le projet utilise un `Makefile` standard. À la racine du projet, vous pouvez utiliser les commandes suivantes :
+```bash
+make              # tout : cœur + jeux + bibliothèques graphiques
+make core         # l'exécutable principal uniquement
+make games        # les jeux       -> ./lib/
+make graphicals   # les affichages -> ./lib/
+make re           # fclean puis all
+```
 
-- `make` : Compile l'intégralité du projet (Core, Jeux et Graphismes).
-- `make core` : Compile uniquement l'exécutable principal.
-- `make games` : Compile les librairies de jeux (ex: Snake) dans le dossier `./lib/`.
-- `make graphicals` : Compile les librairies d'affichage (SFML, SDL2, Ncurses) dans le dossier `./lib/`.
-- `make re` : Nettoie et recompile tout le projet.
+Prérequis : un compilateur C++20, `make`, et les bibliothèques graphiques
+installées (SFML, SDL2, ncurses, Allegro5).
 
-## 🎮 Utilisation
-
-Pour lancer la borne d'arcade, exécutez le binaire en lui passant en paramètre une librairie graphique initiale :
+## Utilisation
 
 ```bash
 ./arcade [graphic_lib.so]
 ```
 
-## Auteurs 👥
+Le paramètre est la bibliothèque graphique de départ ; on peut ensuite en changer à
+chaud. Un `compile_commands.json` est fourni pour l'intégration éditeur.
 
-- [@Romane Cauvez](https://github.com/Romanecauvez)
-- [@Thomas Peze](https://github.com/Thomas-Peze28)
-- [@Jean-Baptise Lamy-Floret](https://github.com/007TheSpectre)
+## Contrôles
 
-## Interface partagée 👥
+| Touche | Action |
+|---|---|
+| Flèches ou `Z` `Q` `S` `D` | Se déplacer / naviguer dans les menus |
+| `Entrée` | Action principale |
+| `Espace` | Action secondaire |
+| `F1` / `F2` | Bibliothèque graphique suivante / précédente |
+| `F3` | Jeu suivant |
+| `R` | Redémarrer le jeu en cours |
+| `M` | Retour au menu principal |
+| `Échap` | Quitter |
 
-- [@Fabien Skotarek](mailto:fabien.skotarek@epitech.eu)
-- @Enzo Sénéchal
-- @Florent Windels
+## Documentation
+
+- [`doc/GAMES.md`](doc/GAMES.md) — implémenter un jeu (`IGame`)
+- [`doc/GRAPHICS.md`](doc/GRAPHICS.md) — implémenter un module graphique (`IDisplay`)
+- [`doc/CONTROLS.md`](doc/CONTROLS.md) — liste complète des contrôles
+
+## Auteurs
+
+- [Jean-Baptiste Lamy-Floret](https://github.com/007TheSpectre) — développeur principal
+- [Romane Cauvez](https://github.com/Romanecauvez)
+- [Thomas Peze](https://github.com/Thomas-Peze28)
+
+L'interface partagée `IGame` / `IDisplay` a été définie en commun avec les autres
+groupes de la promotion — merci à Fabien Skotarek, Enzo Sénéchal et Florent Windels.
